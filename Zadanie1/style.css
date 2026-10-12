@@ -1,0 +1,150 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: rgb(155, 208, 255);
+    max-height: 100vh;
+}
+
+.ground {
+    
+    background-color: rgb(85, 60, 13);
+    position: absolute;
+    bottom: 0;
+    position: absolute;
+    height: 35vh;
+    width: 100%;
+}
+
+.vehicle {
+    position: absolute;
+    top: 40%;
+    left: 30%;
+    z-index: 10;
+}
+
+.carbody {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    margin-bottom: -5px;
+}
+
+.engine {
+    width: 200px;
+    height: 110px;
+    background-color: green;
+    clip-path: polygon(0 18%, 100% 0, 100% 100%, 0 100%);
+    border-radius: 80px 0 0 0;
+}
+
+.cab {
+    width: 150px;
+    height: 180px;
+    background-color: green;
+    border-radius: 0 20px 0 0;
+    clip-path: polygon(0% 100%, 0% 38%, 28% 0%, 100% 0%, 100% 100%);
+}
+
+.door {
+    width: 110px;
+    height: 170px;
+    border: 3px solid rgb(1, 116, 1);
+    clip-path: polygon(0% 100%, 0% 38%, 28% 0%, 100% 0%, 100% 100%);
+    margin-top: 5px;
+    margin-left: 10px;
+}
+
+.window {
+    width: 100px;
+    height: 50px;
+    margin: 5px 0 0 10px;
+    background-color: rgb(155, 208, 255);
+}
+
+.cargobed {
+    width: 450px;
+    height: 160px;
+    display: flex;
+    flex-direction: column;
+}
+
+.planks {
+    width: 450px;
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.plank {
+    width: 450px;
+    height: 20px;
+    background-color: rgb(73, 72, 19);
+}
+
+.side-panels {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.panel {
+    width: 105px;
+    height: 72px;
+    background-color: green;
+    border: 4px solid rgb(1, 116, 1);
+}
+
+.wheelbase {
+    width: 700px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-left: 20px;
+}
+
+.rear-wheels {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+}
+
+.wheel-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+}
+
+.wheel {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    display: grid;
+    place-items: center;
+    width: 120px;
+    height: 120px;
+    background-color: rgb(39, 39, 39);
+    border-radius: 50%;
+    z-index: 2;
+}
+
+.rim {
+    width: 50px;
+    height: 50px;
+    border: 3px solid black;
+    border-radius: 50%;
+    background-color: rgb(29, 29, 29);
+}
+
+.arch {
+    position: absolute;
+    bottom: 60px;
+    left: -10px;
+
+    width: 140px;
+    height: 70px;
+    background-color: green;
+    border-radius: 80px 80px 0 0;
+    z-index: 1;
+}
