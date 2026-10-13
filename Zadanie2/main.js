@@ -36,6 +36,11 @@ function renderRecipes(recipesList) {
 
         const tdName = document.createElement("td");
         tdName.textContent = element.name;
+        tdName.style.cursor = "pointer";
+        tdName.className = "text-primary text-decoration-underline";
+        tdName.addEventListener("click", () => {
+            showRecipeDetails(element);
+        }); 
         tr.appendChild(tdName);
 
         const tdCuisine = document.createElement("td");
@@ -225,3 +230,40 @@ prepTimeRange.addEventListener("input", event => {
 
     filterRecipes(recipes, filters); 
 });
+
+function showRecipeDetails(recipe) {
+    document.getElementById("recipeModalLabel").textContent = recipe.name;
+    document.getElementById("modalCuisine").textContent = recipe.cuisine;
+    document.getElementById("modalDifficulty").textContent = recipe.difficulty;
+    document.getElementById("modalPrepTime").textContent = recipe.prepTimeMinutes + " min";
+    
+    const modalImg = document.getElementById("modalImage");
+    if (recipe.image) {
+        modalImg.src = recipe.image;
+        modalImg.style.display = "block";
+    } else {
+        modalImg.style.display = "none";
+    }
+
+    const ingredientsList = document.getElementById("modalIngredients");
+    ingredientsList.innerHTML = "";
+    recipe.ingredients.forEach(ingredient => {
+        const li = document.createElement("li");
+        li.className = "list-group-item";
+        li.textContent = ingredient;
+        ingredientsList.appendChild(li);
+    });
+
+    const instructionsList = document.getElementById("modalInstructions");
+    instructionsList.innerHTML = "";
+    recipe.instructions.forEach(instruction => {
+        const li = document.createElement("li");
+        li.className = "mb-2";
+        li.textContent = instruction;
+        instructionsList.appendChild(li);
+    });
+
+    const modalElement = document.getElementById("recipeModal");
+    const recipeModal = new bootstrap.Modal(modalElement);
+    recipeModal.show();
+}

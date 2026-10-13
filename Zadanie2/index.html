@@ -67,6 +67,33 @@
     <pre id="apiData" class="bg-light p-3 border rounded"></pre>
 
 </div>
+<div class="modal fade" id="recipeModal" tabindex="-1" aria-labelledby="recipeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="recipeModalLabel">Nazwa przepisu</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center mb-3">
+            <img id="modalImage" src="" alt="Zdjęcie przepisu" class="img-fluid rounded" style="max-height: 250px; object-fit: cover;">
+        </div>
+        
+        <p><strong>Kuchnia:</strong> <span id="modalCuisine"></span></p>
+        <p><strong>Trudność:</strong> <span id="modalDifficulty"></span></p>
+        <p><strong>Czas przygotowania:</strong> <span id="modalPrepTime"></span></p>
+
+        <h6 class="mt-4">Składniki (Ingredients):</h6>
+        <ul id="modalIngredients" class="list-group list-group-flush mb-3"></ul>
+
+        <h6 class="mt-4">Instrukcje (Instructions):</h6>
+        <ol id="modalInstructions" class="ps-3"></ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script src="main.js"></script>
 
