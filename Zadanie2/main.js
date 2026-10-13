@@ -1,4 +1,6 @@
 let recipes = [];
+let favoriteIds = JSON.parse(localStorage.getItem("favorites")) || [];
+let showFav = false;
 
 let filters = {
     name: "",
@@ -50,6 +52,25 @@ function renderRecipes(recipesList) {
         tdRating.textContent = element.rating;
         tr.appendChild(tdRating);
 
+        const td = document.createElement("td");
+        td.className = "text-center"; 
+        const tdFav = document.createElement("i");
+        tdFav.className = "fa-regular fa-star";
+        if (favoriteIds.includes(element.id)) {
+            tdFav.className = "fa-solid fa-star text-warning"; 
+        } else {
+            tdFav.className = "fa-regular fa-star";
+        }        
+        tdFav.dataset.recipeId = element.id;
+
+        tdFav.addEventListener("click", (event) => {
+            const clickedId = event.target.dataset.recipeId;
+            toggleFavorite(clickedId);  
+        })
+
+        td.appendChild(tdFav);
+        tr.appendChild(td);
+
         table.appendChild(tr);
     });
 
@@ -95,27 +116,28 @@ const nameFilterInput = document.getElementById("nameFilter");
 
 nameFilterInput.addEventListener("input", event => {
     filters.name = event.target.value.trim().toLowerCase();
-    filterRecipes(filters);
+    filterRecipes(recipes, filters);
 });
 
 const cuisineSelect = document.getElementById("cuisineSelect");
 
 cuisineSelect.addEventListener("change", event => {
     filters.cuisine = event.target.value;
-    filterRecipes(filters);
+    filterRecipes(recipes, filters);
 });
 
 const difficultySelect = document.getElementById("difficultySelect");
 
 difficultySelect.addEventListener("change", event => {
     filters.difficulty = event.target.value;
-    filterRecipes(filters);
+    filterRecipes(recipes, filters);
 });
 
-function filterRecipes(filters) {
+function filterRecipes(recipes, filters) {
     const filteredRecipes = recipes.filter(recipe => {
-        const matchesName =
-            recipe.name.toLowerCase().includes(filters.name);
+        const matchesFav = !showFav || favoriteIds.includes(recipe.id);
+
+        const matchesName = recipe.name.toLowerCase().includes(filters.name);
 
         const matchesCuisine =
             filters.cuisine === "" ||
@@ -125,7 +147,7 @@ function filterRecipes(filters) {
             filters.difficulty === "" ||
             recipe.difficulty === filters.difficulty;
 
-        return matchesName && matchesCuisine && matchesDifficulty;
+        return matchesFav && matchesName && matchesCuisine && matchesDifficulty;
     });
 
     renderRecipes(filteredRecipes);
@@ -137,10 +159,32 @@ resetButton.addEventListener("click", event => {
     filters.name = ""
     filters.cuisine = ""
     filters.difficulty = ""
+    showFav = false;
 
     nameFilterInput.value = ""
     cuisineSelect.value = ""
     difficultySelect.value = ""
 
-    filterRecipes(filters)
+    filterRecipes(recipes, filters)
 });
+
+const seeFavButton = document.getElementById("seeFavButton");
+
+seeFavButton.addEventListener("click", event => {
+    
+    showFav = !showFav;
+    filterRecipes(recipes, filters)
+});
+
+function toggleFavorite(id) {
+    const numericId = Number(id);
+
+    if (favoriteIds.includes(numericId)) {
+        favoriteIds = favoriteIds.filter(favId => favId !== numericId);
+    } else {
+        favoriteIds.push(numericId);
+    }
+
+    localStorage.setItem("favorites", JSON.stringify(favoriteIds));
+    filterRecipes(recipes, filters)
+}
