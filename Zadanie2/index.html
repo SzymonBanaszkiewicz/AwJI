@@ -32,6 +32,12 @@
         <select class="form-select" id="difficultySelect">
             <option value="">All</option>
         </select>
+        <label class="form-label" for="">Czas przygotowania:</label>
+        <input type="range" class="form-range slider" id="prepTimeRange" step="5">
+        <div class="d-flex justify-content-between text-muted small">
+            <span id="minTime"></span>
+            <span id="maxTime"></span>
+        </div>
     </div>
 
     <button class="btn btn-primary mb-4" id="seeFavButton">Favourite Recipes</button>

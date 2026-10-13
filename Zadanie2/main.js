@@ -5,7 +5,8 @@ let showFav = false;
 let filters = {
     name: "",
     cuisine: "",
-    difficulty: ""
+    difficulty: "",
+    prepTime: Infinity
 };
 
 fetch("https://dummyjson.com/recipes")
@@ -18,6 +19,7 @@ fetch("https://dummyjson.com/recipes")
 
         generateCuisineSelect(recipes);
         generateDifficultySelect(recipes);
+        generatePrepTimeSelect(recipes)
 
         renderRecipes(recipes);
     })
@@ -112,6 +114,27 @@ function generateDifficultySelect(recipesList) {
     });
 }
 
+function generatePrepTimeSelect(recipesList) {
+    if (!recipesList || recipesList.length === 0) return;
+
+    const prepTimes = recipesList.map(recipe => recipe.prepTimeMinutes);
+    const minTime = Math.min(...prepTimes);
+    const maxTime = Math.max(...prepTimes);
+
+    const rangeInput = document.getElementById("prepTimeRange");
+
+    rangeInput.min = minTime;
+    rangeInput.max = maxTime;
+    
+    rangeInput.value = maxTime;
+    filters.prepTime = maxTime;
+
+    const minTimeSpan = document.getElementById("minTime");
+    const maxTimeSpan = document.getElementById("maxTime");
+    if (minTimeSpan) minTimeSpan.textContent = minTime + " min";
+    if (maxTimeSpan) maxTimeSpan.textContent = maxTime + " min";
+}
+
 const nameFilterInput = document.getElementById("nameFilter");
 
 nameFilterInput.addEventListener("input", event => {
@@ -147,7 +170,9 @@ function filterRecipes(recipes, filters) {
             filters.difficulty === "" ||
             recipe.difficulty === filters.difficulty;
 
-        return matchesFav && matchesName && matchesCuisine && matchesDifficulty;
+        const matchesPrepTime = recipe.prepTimeMinutes <= filters.prepTime;
+
+        return matchesFav && matchesName && matchesCuisine && matchesDifficulty && matchesPrepTime;
     });
 
     renderRecipes(filteredRecipes);
@@ -159,6 +184,9 @@ resetButton.addEventListener("click", event => {
     filters.name = ""
     filters.cuisine = ""
     filters.difficulty = ""
+    const maxVal = Number(prepTimeRange.max);
+    filters.prepTime = maxVal;
+    prepTimeRange.value = maxVal;
     showFav = false;
 
     nameFilterInput.value = ""
@@ -188,3 +216,12 @@ function toggleFavorite(id) {
     localStorage.setItem("favorites", JSON.stringify(favoriteIds));
     filterRecipes(recipes, filters)
 }
+
+const prepTimeRange = document.getElementById("prepTimeRange");
+
+prepTimeRange.addEventListener("input", event => {
+    const val = Number(event.target.value);
+    filters.prepTime = val; 
+
+    filterRecipes(recipes, filters); 
+});
