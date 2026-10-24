@@ -1,7 +1,14 @@
 import express = require('express');
+import 'dotenv/config';
+import { connectDB } from './config/database';
 
 const app: express.Express = express();
 const port = 3000;
+
+connectDB().catch(error => {
+  console.error('Failed to connect to database:', error);
+  process.exit(1);
+});
 
 app.use(express.json());
 
