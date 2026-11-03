@@ -1,23 +1,31 @@
 import express = require('express');
 import 'dotenv/config';
 import { connectDB } from './config/database';
+import productRoutes from './routes/productRoutes';
 
 const app: express.Express = express();
 const port = 3000;
 
-connectDB().catch(error => {
-  console.error('Failed to connect to database:', error);
-  process.exit(1);
-});
+
+
+async function startServer() {
+    try {
+      await connectDB();
+      app.use('/api/products', productRoutes);
+      app.listen(port, () => {
+        console.log(`Example app listening on port ${port}`);
+      });
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
 
 app.use(express.json());
 
 app.get('/', (req: express.Request, res: express.Response) => {
     res.send('Hello World!');
-});
-
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
 });
 
 app.get('/health', (req: express.Request, res: express.Response) => {
@@ -27,3 +35,5 @@ app.get('/health', (req: express.Request, res: express.Response) => {
     timestamp: new Date().toISOString()
   });
 });
+
+startServer();
