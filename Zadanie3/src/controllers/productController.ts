@@ -1,7 +1,8 @@
 import { Product } from '../models/Product';
 import { Category } from '../models/Category';
-import { productSchema } from '../schemas/productSchema';
+import { productSchema, updateProductSchema } from '../schemas/productSchema';
 import type { Request, Response } from 'express';
+import mongoose from 'mongoose';
 
 export async function getProducts(
   req: Request,
@@ -68,23 +69,114 @@ export async function createProduct(
   }
 }
 
-export async function getProductByID(
-  eq: Request,
+export async function getProductById(
+  req: Request<{ id: string }>,
   res: Response
-): Promise<void>  {
+): Promise<void> {
+  const id = req.params.id;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.status(400).json({
+      status: 'error',
+      message: "Incorrect ID format",
+      });
+    return;
+    }
 
+    const product = await Product.findById(id);
+
+    if (!product) {
+      res.status(404).json({
+      status: 'error',
+      message: "Product not found",
+      });
+    return;
+    }
+
+    res.status(200).json({
+      status: 'ok',
+      product,
+    });
+  } catch (error) {
+    console.error('Error fetching product:', error);
+
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to fetch product',
+    });
+  }
 }
 
 export async function updateProduct(
-  eq: Request,
+  req: Request<{ id: string }>,
   res: Response
-): Promise<void>  {
-    
-}
+): Promise<void> {
+  const id = req.params.id;
 
-export async function deleteProduct(
-  eq: Request,
-  res: Response
-): Promise<void>  {
-    
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.status(400).json({
+        status: 'error',
+        message: 'Incorrect ID format',
+      });
+      return;
+    }
+
+    const existingProduct = await Product.findById(id);
+
+    if (!existingProduct) {
+      res.status(404).json({
+        status: 'error',
+        message: 'Product not found',
+      });
+      return;
+    }
+
+    const validation = updateProductSchema.safeParse(req.body);
+
+    if (!validation.success) {
+      res.status(400).json({
+        status: 'error',
+        message: 'Invalid product data',
+        errors: validation.error.issues,
+      });
+      return;
+    }
+
+    if (validation.data.categoryId) {
+      const category = await Category.findById(
+        validation.data.categoryId
+      );
+
+      if (!category) {
+        res.status(400).json({
+          status: 'error',
+          message: 'Category does not exist',
+        });
+        return;
+      }
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      id,
+      validation.data,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    res.status(200).json({
+      status: 'ok',
+      product: updatedProduct,
+    });
+
+  } catch (error) {
+    console.error('Error updating product:', error);
+
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to update product',
+    });
+  }
 }

@@ -2,6 +2,8 @@ import express = require('express');
 import 'dotenv/config';
 import { connectDB } from './config/database';
 import productRoutes from './routes/productRoutes';
+import categoryRoutes from './routes/categoryRoutes';
+import { initializeData } from './seed/initializeData';
 
 const app: express.Express = express();
 const port = 3000;
@@ -12,6 +14,12 @@ async function startServer() {
     try {
       await connectDB();
       app.use('/api/products', productRoutes);
+      app.use('/api/categories', categoryRoutes);
+      try {
+        initializeData();
+      } catch (error) {
+        console.log(error)
+      }
       app.listen(port, () => {
         console.log(`Example app listening on port ${port}`);
       });

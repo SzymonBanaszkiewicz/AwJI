@@ -4,7 +4,7 @@ import { categorySchema } from "../schemas/categorySchema";
 
 
 export async function getCategories(
-  eq: Request,
+  req: Request,
   res: Response
 ): Promise<void>  {
     try {
